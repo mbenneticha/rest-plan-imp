@@ -125,8 +125,11 @@ class BoatHandler(webapp2.RequestHandler):
     #view all boats
     else:
       allBoats = Boat.query().fetch()
-      allBoats = allBoats.to_dict()
-      self.response.write(allBoats)
+      allBoats_dict = []
+      for boat in allBoats:
+        boat_dict = boat.to_dict()
+        allBoats_dict['allBoats'].append(boat_dict)
+      self.response.write(allBoats_dict)
 
   #set a boat to "at sea"
   #manage a boat's arrival
