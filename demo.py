@@ -138,7 +138,7 @@ class SlipHandler(webapp2.RequestHandler):
   def post(self):
     #parent_key = ndb.Key(Slip, "parent_slip")
     slip_data = json.loads(self.request.body)
-    new_slip = Boat(number=slip_data['number'], current_boat = None, arrival_date = None)
+    new_slip = Slip(number=slip_data['number'], current_boat = None, arrival_date = None)
     new_slip.put()
     new_slip.id = new_slip.key.urlsafe()
     new_slip.put()
