@@ -33,11 +33,11 @@ class BoatHandler(webapp2.RequestHandler):
       if id:
         b = ndb.Key(urlsafe=id).get()
         #if boat is in slip
-        if (b.at_sea = false):
+        if (b.at_sea == false):
           #get all slips
           slip = allSlips.get()
           #empty slip with boat
-          if (slip.current_boat = b.id):
+          if (slip.current_boat == b.id):
             slip.current_boat = None
             slip.arrival_date = None
             slip.put()
