@@ -35,7 +35,7 @@ class BoatHandler(webapp2.RequestHandler):
       if id:
         b = ndb.Key(urlsafe=id).get()
         #if boat is in slip
-        if (b.at_sea == false):
+        if (b.at_sea == False):
           #get all slips
           allSlips = Slip.query().fetch()
           slip = allSlips.get()
@@ -137,8 +137,10 @@ class SlipHandler(webapp2.RequestHandler):
     slip_data = json.loads(self.request.body)
     new_slip = Boat(number=slip_data['number'], current_boat = NULL, arrival_date = NULL)
     new_slip.put()
+    new_slip.id = new_slip.key.urlsafe()
+    new_slip.put()
     slip_dict = new_slip.to_dict()
-    slip_dict['id'] = '/slip/' + new_slip.key.urlsafe()
+    slip_dict['self'] = '/slip/' + new_slip.id
     self.response.write(json.dumps(slip_dict))
  
   #delete a slip; sets the current_boat->id to "at_sea"
@@ -248,7 +250,7 @@ class LaunchHandler(webapp2.RequestHandler):
         #check that slip has a boat
         if (slip_data.get('current_boat')!=NULL):
           b = s.current_boat
-          b.at_sea = true;
+          b.at_sea = True;
           b.put()
           
           #free the slip
@@ -290,7 +292,7 @@ class LaunchHandler(webapp2.RequestHandler):
           #update boat to at_sea=False
           if (slip_data.get('current_boat')!=NULL):
             b = s.current_boat
-            b.at_sea = false;
+            b.at_sea = False;
             b.put()
           
           boat_dict = b.to_dict()
