@@ -22,9 +22,10 @@ class BoatHandler(webapp2.RequestHandler):
     #parent_key = ndb.Key(Boat, "parent_boat")
     boat_data = json.loads(self.request.body)
     new_boat = Boat(name=boat_data['name'], type=boat_data['type'], length=boat_data['length'], at_sea=True)
+    new_boat.id = new_boat.key.urlsafe()
     new_boat.put()
     boat_dict = new_boat.to_dict()
-    boat_dict['id'] = '/boat/' + new_boat.key.urlsafe()
+    boat_dict['self'] = '/boat/' + new_boat.id
     self.response.write(json.dumps(boat_dict))
 
   #delete a boat
