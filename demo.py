@@ -164,7 +164,7 @@ class SlipHandler(webapp2.RequestHandler):
         s = ndb.Key(urlsafe=id).get()
         # error out if updating wrong data
         #if current_boat != NULL, arrival_date CANNOT be NULL
-        if (slip_data.get('current_boat')!=NULL && slip_data.get('arrival_date')==NULL):
+        if (slip_data.get('current_boat')!=NULL and slip_data.get('arrival_date')==NULL):
           self.response.write("ERROR: Must include arrival_date if current_boat is not NULL.")
         # update correct data
         else:
@@ -191,7 +191,7 @@ class SlipHandler(webapp2.RequestHandler):
         s = ndb.Key(urlsafe=id).get()
         # error out if updating wrong data
         #if current_boat != NULL, arrival_date CANNOT be NULL
-        if (slip_data.get('current_boat')!=NULL && slip_data.get('arrival_date')==NULL):
+        if (slip_data.get('current_boat')!=NULL and slip_data.get('arrival_date')==NULL):
           self.response.write("ERROR: Must include arrival_date if current_boat is not NULL.")
         #or if no number is given
         elif slip_data.get('number')==NULL:
