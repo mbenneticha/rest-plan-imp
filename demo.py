@@ -26,7 +26,7 @@ class BoatHandler(webapp2.RequestHandler):
 	  boat_dict = new_boat.to_dict()
 	  boat_dict['id'] = '/boat/' + new_boat.key.urlsafe()
 	  self.response.write(json.dumps(boat_dict))
-  
+ """ 
   #delete a boat
   def delete(self, id=None):
     try:
@@ -123,7 +123,7 @@ class BoatHandler(webapp2.RequestHandler):
 	#set a boat to "at sea"
 	#manage a boat's arrival
 	#need slip id, date of arrival, boat id
-
+"""
 
 class SlipHandler(webapp2.RequestHandler):
   
@@ -136,7 +136,7 @@ class SlipHandler(webapp2.RequestHandler):
     slip_dict = new_slip.to_dict()
     slip_dict['id'] = '/slip/' + new_slip.key.urlsafe()
     self.response.write(json.dumps(slip_dict))
-  
+"""  
   #delete a slip; sets the current_boat->id to "at_sea"
   def delete(self, id=None):
     try:
@@ -298,7 +298,7 @@ class LaunchHandler(webapp2.RequestHandler):
     except (HTTPError, 404):
       self.response.write("<html><body><p>Bad Request. Ensure Values are correct.</p></body></html>")
 
-
+"""
 class MainPage(webapp2.RequestHandler):
     def get(self):
         self.response.write("hello Mariam")
