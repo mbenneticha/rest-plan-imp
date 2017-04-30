@@ -125,6 +125,7 @@ class BoatHandler(webapp2.RequestHandler):
     #view all boats
     else:
       allBoats = Boat.query().fetch()
+      allBoats = allBoats.to_dict()
       self.response.write(allBoats)
 
   #set a boat to "at sea"
@@ -240,6 +241,7 @@ class SlipHandler(webapp2.RequestHandler):
     #view all slips
     else:
       allSlips = Slip.query().fetch()
+      allSlips = allSlips.to_dict()
       self.response.write(allSlips)
 
 class LaunchHandler(webapp2.RequestHandler):
