@@ -121,9 +121,9 @@ class BoatHandler(webapp2.RequestHandler):
     if id:
       b = ndb.Key(urlsafe=id).get()
       b_d = b.to_dict()
+      self.response.write(json.dumps(b_d))
     #view all boats
     else:
-      self.response.write(json.dumps(b_d))
       allBoats = Boat.query().fetch()
       self.response.write(allBoats)
 
@@ -236,9 +236,9 @@ class SlipHandler(webapp2.RequestHandler):
     if id:
       s = ndb.Key(urlsafe=id).get()
       s_d = s.to_dict()
+      self.response.write(json.dumps(s_d))
     #view all slips
     else:
-      self.response.write(json.dumps(s_d))
       allSlips = Slip.query().fetch()
       self.response.write(allSlips)
 
