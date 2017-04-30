@@ -128,7 +128,7 @@ class BoatHandler(webapp2.RequestHandler):
       allBoats_dict = []
       for boat in allBoats:
         boat_dict = boat.to_dict()
-        allBoats_dict[].append(boat_dict)
+        allBoats_dict.append(boat_dict)
       self.response.write(allBoats_dict)
 
   #set a boat to "at sea"
