@@ -19,13 +19,13 @@ class Slip(ndb.Model):
 class BoatHandler(webapp2.RequestHandler):
   #add a newly created boat; starts at_sea = True
   def post(self):
-	  #parent_key = ndb.Key(Boat, "parent_boat")
-	  boat_data = json.loads(self.request.body)
-	  new_boat = Boat(name=boat_data['name'], type=boat_data['type'], length=boat_data['length'], at_sea=True)
-	  new_boat.put()
-	  boat_dict = new_boat.to_dict()
-	  boat_dict['id'] = '/boat/' + new_boat.key.urlsafe()
-	  self.response.write(json.dumps(boat_dict))
+    #parent_key = ndb.Key(Boat, "parent_boat")
+    boat_data = json.loads(self.request.body)
+    new_boat = Boat(name=boat_data['name'], type=boat_data['type'], length=boat_data['length'], at_sea=True)
+    new_boat.put()
+    boat_dict = new_boat.to_dict()
+    boat_dict['id'] = '/boat/' + new_boat.key.urlsafe()
+    self.response.write(json.dumps(boat_dict))
 
   #delete a boat
   def delete(self, id=None):
@@ -71,42 +71,42 @@ class BoatHandler(webapp2.RequestHandler):
       self.response.write("<html><body><p>Bad Request. Ensure ID Values are correct.</p></body></html>")
   
   #replace a boat; at_sea value remains the same.
-	def put(self, id=None):
-	  try:
-	    if id:
-	      # get request body
-	      boat_data = json.loads(self.request.body)
-	      # get boat in question
-	      b = ndb.Key(urlsafe=id).get()
-	      # error out if updating at_sea
-	      if boat_data.get('at_sea') or boat_data.get('at_sea')==False:
-	        self.response.write("Cannot change at_sea manually!")
-	      #or if no name is given
-	      elif boat_data.get('name')==NULL:
-	        self.response.write("Boat name is REQUIRED!")
-	      #update correct data
-	      else:
-	        #set new name
-	        if boat_data.get('name'):
-	          b.name = boat_data['name']
-	          self.response.write("Updated boat name\n")
-	        #set new type if given
-	        if boat_data.get('type'):
-	          b.type = boat_data['type']
-	          self.response.write("Updated boat type\n")
-	        else:
-	          b.type = null;
-	        #set new length if given
-	        if boat_data.get('length'):
-	          b.length = boat_data['length']
-	          self.response.write("Updated boat length\n")
-	        else:
-	          b.length = null;
-	        b.put()
-	        boat_dict = b.to_dict()
-	        self.response.write(boat_dict)
-	  except (HTTPError, 404):
-	    self.response.write("<html><body><p>Bad Request. Ensure ID Values are correct.</p></body></html>")
+  def put(self, id=None):
+    try:
+      if id:
+        # get request body
+        boat_data = json.loads(self.request.body)
+        # get boat in question
+        b = ndb.Key(urlsafe=id).get()
+        # error out if updating at_sea
+        if boat_data.get('at_sea') or boat_data.get('at_sea')==False:
+          self.response.write("Cannot change at_sea manually!")
+        #or if no name is given
+        elif boat_data.get('name')==NULL:
+          self.response.write("Boat name is REQUIRED!")
+        #update correct data
+        else:
+          #set new name
+          if boat_data.get('name'):
+            b.name = boat_data['name']
+            self.response.write("Updated boat name\n")
+          #set new type if given
+          if boat_data.get('type'):
+            b.type = boat_data['type']
+            self.response.write("Updated boat type\n")
+          else:
+            b.type = null;
+          #set new length if given
+          if boat_data.get('length'):
+            b.length = boat_data['length']
+            self.response.write("Updated boat length\n")
+          else:
+            b.length = null;
+          b.put()
+          boat_dict = b.to_dict()
+          self.response.write(boat_dict)
+    except (HTTPError, 404):
+      self.response.write("<html><body><p>Bad Request. Ensure ID Values are correct.</p></body></html>")
   
   #view a boat
   def get(self, id=None):
@@ -120,9 +120,9 @@ class BoatHandler(webapp2.RequestHandler):
       allBoats = Boat.query().fetch()
       self.response.write(allBoats)
 
-	#set a boat to "at sea"
-	#manage a boat's arrival
-	#need slip id, date of arrival, boat id
+  #set a boat to "at sea"
+  #manage a boat's arrival
+  #need slip id, date of arrival, boat id
 
 
 class SlipHandler(webapp2.RequestHandler):
