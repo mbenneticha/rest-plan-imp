@@ -46,7 +46,8 @@ class BoatHandler(webapp2.RequestHandler):
         #delete boat
         b.key.delete()
         self.response.write("<html><body><p>Success: Boat deleted!</p></body></html>")
-    except (HTTPError, 404):
+    except ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure ID Values are correct.</p></body></html>")
   
   #modify a boat's properties; excludes at_sea!
