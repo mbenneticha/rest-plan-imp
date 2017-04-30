@@ -46,6 +46,7 @@ class BoatHandler(webapp2.RequestHandler):
             slip.put()
         #delete boat
         b.key.delete()
+        self.response.status = '204 Success'
         self.response.write("<html><body><p>Success: Boat deleted!</p></body></html>")
     except ValueError:
       self.response.status = '400 Bad Request'
@@ -71,7 +72,8 @@ class BoatHandler(webapp2.RequestHandler):
           b.put()
           boat_dict = b.to_dict()
           self.response.write(boat_dict)
-    except (HTTPError, 404):
+    except  ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure ID Values are correct.</p></body></html>")
   
   #replace a boat; at_sea value remains the same.
@@ -86,7 +88,7 @@ class BoatHandler(webapp2.RequestHandler):
         if boat_data.get('at_sea') or boat_data.get('at_sea')==False:
           self.response.write("Cannot change at_sea manually!")
         #or if no name is given
-        elif boat_data.get('name')==NULL:
+        elif boat_data.get('name')==None:
           self.response.write("Boat name is REQUIRED!")
         #update correct data
         else:
@@ -99,17 +101,18 @@ class BoatHandler(webapp2.RequestHandler):
             b.type = boat_data['type']
             self.response.write("Updated boat type\n")
           else:
-            b.type = null;
+            b.type = None;
           #set new length if given
           if boat_data.get('length'):
             b.length = boat_data['length']
             self.response.write("Updated boat length\n")
           else:
-            b.length = null;
+            b.length = None;
           b.put()
           boat_dict = b.to_dict()
           self.response.write(boat_dict)
-    except (HTTPError, 404):
+    except ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure ID Values are correct.</p></body></html>")
   
   #view a boat
@@ -131,11 +134,11 @@ class BoatHandler(webapp2.RequestHandler):
 
 class SlipHandler(webapp2.RequestHandler):
   
-  #add a newly created slip; current_boat = NULL (start as empty); arrival_date = NULL
+  #add a newly created slip; current_boat = None (start as empty); arrival_date = None
   def post(self):
     #parent_key = ndb.Key(Slip, "parent_slip")
     slip_data = json.loads(self.request.body)
-    new_slip = Boat(number=slip_data['number'], current_boat = NULL, arrival_date = NULL)
+    new_slip = Boat(number=slip_data['number'], current_boat = None, arrival_date = None)
     new_slip.put()
     new_slip.id = new_slip.key.urlsafe()
     new_slip.put()
@@ -149,15 +152,17 @@ class SlipHandler(webapp2.RequestHandler):
       if id:
         s = ndb.Key(urlsafe=id).get()
         #if slip is occupied
-        if (s.current_boat != NULL):
+        if (s.current_boat != None):
           #set current_boat->id->at_sea=TRUE
           b = s.current_boat
           b.at_sea = TRUE;
           b.put()
         #delete the slip
         s.key.delete()
+        self.response.status = '204 Success'
         self.response.write("<html><body><p>Success: Slip deleted!</p></body></html>")
-    except (HTTPError, 404):
+    except ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure ID Values are correct.</p></body></html>")
   
   #modify/add something new to a slip's existing properties
@@ -169,9 +174,9 @@ class SlipHandler(webapp2.RequestHandler):
         # get slip in question
         s = ndb.Key(urlsafe=id).get()
         # error out if updating wrong data
-        #if current_boat != NULL, arrival_date CANNOT be NULL
-        if (slip_data.get('current_boat')!=NULL and slip_data.get('arrival_date')==NULL):
-          self.response.write("ERROR: Must include arrival_date if current_boat is not NULL.")
+        #if current_boat != None, arrival_date CANNOT be None
+        if (slip_data.get('current_boat')!=None and slip_data.get('arrival_date')==None):
+          self.response.write("ERROR: Must include arrival_date if current_boat is not None.")
         # update correct data
         else:
           if slip_data.get('number'):
@@ -184,7 +189,8 @@ class SlipHandler(webapp2.RequestHandler):
           s.put()
           slip_dict = s.to_dict()
           self.response.write(slip_dict)
-    except (HTTPError, 404):
+    except ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure Values are correct.</p></body></html>")
   
   #replace a slip's existing properties
@@ -196,11 +202,11 @@ class SlipHandler(webapp2.RequestHandler):
         # get slip in question
         s = ndb.Key(urlsafe=id).get()
         # error out if updating wrong data
-        #if current_boat != NULL, arrival_date CANNOT be NULL
-        if (slip_data.get('current_boat')!=NULL and slip_data.get('arrival_date')==NULL):
-          self.response.write("ERROR: Must include arrival_date if current_boat is not NULL.")
+        #if current_boat != None, arrival_date CANNOT be None
+        if (slip_data.get('current_boat')!=None and slip_data.get('arrival_date')==None):
+          self.response.write("ERROR: Must include arrival_date if current_boat is not NONE.")
         #or if no number is given
-        elif slip_data.get('number')==NULL:
+        elif slip_data.get('number')==None:
           self.response.write("Slip number is REQUIRED!")
         #update correct data
         else:
@@ -215,12 +221,13 @@ class SlipHandler(webapp2.RequestHandler):
           self.response.write("Replaced slip current_boat\n")
           self.response.write("Replaced slip arrival_date\n")
         else:
-          s.current_boat = null;
-          s.arrival_date = null;
+          s.current_boat = None;
+          s.arrival_date = None;
         s.put()
         slip_dict = s.to_dict()
         self.response.write(slip_dict)
-    except (HTTPError, 404):
+    except ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure Values are correct.</p></body></html>")
   
   #view a slip by id; include url to current_boa
@@ -248,22 +255,24 @@ class LaunchHandler(webapp2.RequestHandler):
         # error out if updating wrong data
         #update correct data
         #check that slip has a boat
-        if (slip_data.get('current_boat')!=NULL):
+        if (slip_data.get('current_boat')!=None):
           b = s.current_boat
           b.at_sea = True;
           b.put()
           
           #free the slip
-          s.current_boat = NULL
-          s.arrival_date = NULL
+          s.current_boat = None
+          s.arrival_date = None
           s.put()
           slip_dict = s.to_dict()
           self.response.write("Boat set at_sea = TRUE\n")
           self.response.write("Slip is now empty.\n")
           self.response.write(slip_dict)
         else:
+          self.response.status = '403 Forbidden'
           self.response.write("ERROR: Slip is ALREADY empty.\n")
-    except (HTTPError, 404):
+    except ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure Values are correct.</p></body></html>")
   
   #manage a boat's arrival; sets a slip to full
@@ -277,20 +286,20 @@ class LaunchHandler(webapp2.RequestHandler):
         s = ndb.Key(urlsafe=id).get()
         # error out if updating wrong data
         #if no boat or no arrival_date passed in, error out
-        if (slip_data.get('current_boat')==NULL or slip_data.get('arrival_date')==NULL):
+        if (slip_data.get('current_boat')==None or slip_data.get('arrival_date')==None):
           self.response.write("ERROR: Must include arrival_date AND current_boat.")
         #check if slip has a boat already
-        elif (s.current_boat!=NULL):
+        elif (s.current_boat!=None):
           self.response.write("ERROR: This slip is already occupied.\n")
         #update correct data
         else:
           #place the boat into the slip
-          if (slip_data.get('current_boat')!= NULL):
+          if (slip_data.get('current_boat')!= None):
             s.current_boat = slip_data.get('current_boat')
             s.arrival_date = slip_data.get('arrival_date')
             s.put()
           #update boat to at_sea=False
-          if (slip_data.get('current_boat')!=NULL):
+          if (slip_data.get('current_boat')!=None):
             b = s.current_boat
             b.at_sea = False;
             b.put()
@@ -301,7 +310,8 @@ class LaunchHandler(webapp2.RequestHandler):
           self.response.write("Slip is now occupied.\n")
           self.response.write(slip_dict)
           self.response.write(boat_dict)
-    except (HTTPError, 404):
+    except ValueError:
+      self.response.status = '400 Bad Request'
       self.response.write("<html><body><p>Bad Request. Ensure Values are correct.</p></body></html>")
 
 
