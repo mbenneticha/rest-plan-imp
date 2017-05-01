@@ -276,18 +276,18 @@ class SlipHandler(webapp2.RequestHandler):
 class LaunchHandler(webapp2.RequestHandler):
   
   #set a boat to "at sea"; this empties slip
-  def patch(self, id=None):
+  def delete(self, id=None):
     try:
       if id:
         # get request body
-        slip_data = json.loads(self.request.body)
+        #slip_data = json.loads(self.request.body)
         # get slip in question
         s = ndb.Key(urlsafe=id).get()
         # error out if updating wrong data
         #update correct data
         #check that slip has a boat
-        if (slip_data.get('current_boat')!=None):
-          b = s.current_boat
+        if (s.current_boat!=None):
+          b = ndb.Key(urlsafe=s.current_boat).get()
           b.at_sea = True;
           b.put()
           
@@ -360,5 +360,5 @@ app = webapp2.WSGIApplication([
     ('/boat/(.*)', BoatHandler),
     ('/slip', SlipHandler),
     ('/slip/(.*)', SlipHandler),
-    ('/slip/(.*)/boat', LaunchHandler),
+    ('/slip/<id:(\w+)>/boat', LaunchHandler),
 ], debug=True)
