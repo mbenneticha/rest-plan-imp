@@ -164,7 +164,7 @@ class SlipHandler(webapp2.RequestHandler):
       if id:
         s = ndb.Key(urlsafe=id).get()
         #if slip is occupied
-        if (s.current_boat != None):
+        if s.current_boat:
           #set current_boat->id->at_sea=TRUE
           b = s.current_boat
           b.at_sea = TRUE;
