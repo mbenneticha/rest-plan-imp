@@ -1,0 +1,499 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Rest-Plan-Imp",
+		"_postman_id": "ca674024-cdc4-2007-a92e-be22d4185a9b",
+		"description": "Collection of tests for Week 3 Assignment Rest Planning and Implementation.\n\nYour API should support the following\n\n1.All operations on Boats and Slips\n -Add\n\tAll newly created boats should start \"At sea\"\n\tAll newly created slips should be empty\n - Delete\n\tDeleting a ship should empty the slip the boat was previously in\n\tThe behavior of the history of deleted boats (in the extra credit option) is undefined\n\tDeleting a pier a boat is currently in should set that boat to be \"At sea\"\n -Modify\n -Replace\n -View\n\tYou should be able to either view a single entity or the entire collections of entities, for example, I should be able to view the details of a single boat as well as get a list of all boats\n\n\tIt should be possible, via a url, to view the specific boat currently occupying any slip.\n2.Setting a boat to be \"At sea\"\n -This should cause the previously occupied slip to become empty\n -If you are doing the extra credit portion, this should cause the ship departure to be added to the slip history\n -Setting the ship to be \"At sea\" and updating the slip status should happen via a single API call\n3.Managing a boat arrival\n -A ship should be able to arrive and be assigned a slip\n -If the slip is occupied the server should return an Error 403 Forbidden message\n -This will require knowing the slip, date of arrival and boat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create a Boat - Proper Inputs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that the contents of the Boat you created match the contents you sent and it's at_sea=TRUE.",
+							"",
+							"//parse response data",
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"//checks that boat name is correct",
+							"tests[\"Correct Name\"] = jsonData.name === \"First Lady\";",
+							"",
+							"//check that boat type is correct",
+							"tests[\"Correct Type\"] = jsonData.type === \"Long Boat\";",
+							"",
+							"//check that boat length is correct",
+							"tests[\"Correct Length\"] = jsonData.length === 300;",
+							"",
+							"//check that boat at_sea = True",
+							"tests[\"Boat is at sea\"] = jsonData.at_sea === true;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/boat",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"First Lady\",\n  \"type\": \"Long Boat\",\n  \"length\": 300\n}"
+				},
+				"description": "http://week3-166218.appspot.com/boat"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a Boat (at sea)- Proper Inputs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can delete a gist.",
+							"",
+							"tests[\"Status code is 204\"] = responseCode.code === 204;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/boat/ag5wfndlZWszLTE2NjIxOHIRCxIEQm9hdBiAgICAmdKFCQw",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "http://week3-166218.appspot.com/boat/:id"
+			},
+			"response": []
+		},
+		{
+			"name": "Create a Slip - Proper Inputs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that the contents of the Slip you created match the contents you sent and it's empty.",
+							"",
+							"//parse response data",
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"//checks that slip number is correct",
+							"tests[\"Correct Number\"] = jsonData.number === 15;",
+							"",
+							"//check that slip is empty",
+							"tests[\"Correct Current_boat\"] = jsonData.current_boat === null;",
+							"",
+							"//check that slip is empty",
+							"tests[\"Correct arrival_date\"] = jsonData.arrival_date === null;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/slip",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"number\": 15\n}"
+				},
+				"description": "http://week3-166218.appspot.com/slip"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a Slip (empty)- Proper Inputs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can delete a gist.",
+							"",
+							"tests[\"Status code is 204\"] = responseCode.code === 204;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/slip/ag5wfndlZWszLTE2NjIxOHIRCxIEU2xpcBiAgICAvNWTCQw",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "http://week3-166218.appspot.com/slip/:id"
+			},
+			"response": []
+		},
+		{
+			"name": "View List of All Boats",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can view all boats.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/boat/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "http://week3-166218.appspot.com/boat"
+			},
+			"response": []
+		},
+		{
+			"name": "View List of All Slips",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can view all slips.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/slip",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "http://week3-166218.appspot.com/slip"
+			},
+			"response": []
+		},
+		{
+			"name": "View one Boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can view a boat.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/boat/ag5wfndlZWszLTE2NjIxOHIRCxIEQm9hdBiAgICAvKGCCQw",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "http://week3-166218.appspot.com/boat/{:id}"
+			},
+			"response": []
+		},
+		{
+			"name": "View one Slip",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can view one slips.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/slip/ag5wfndlZWszLTE2NjIxOHIRCxIEU2xpcBiAgICA-JaVCww",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "http://week3-166218.appspot.com/slip/{:id}"
+			},
+			"response": []
+		},
+		{
+			"name": "Modify a Boat (excludes at_sea property)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can edit a boat.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/boat/ag5wfndlZWszLTE2NjIxOHIRCxIEQm9hdBiAgICA3uqJCgw",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Burpees\",\n  \"type\": \"Supercalifragilistic\",\n  \"length\": 20000\n}"
+				},
+				"description": "http://week3-166218.appspot.com/boat/{:id}"
+			},
+			"response": []
+		},
+		{
+			"name": "Replace a Boat (excludes at_sea property)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can replace a boat.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/boat/ag5wfndlZWszLTE2NjIxOHIRCxIEQm9hdBiAgICA3uqJCgw",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Burpees\",\n  \"type\": \"Long Boat\",\n  \"length\": 200\n}"
+				},
+				"description": "http://week3-166218.appspot.com/boat/{:id}"
+			},
+			"response": []
+		},
+		{
+			"name": "Modify a Slip ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can modify a slip.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/slip/ag5wfndlZWszLTE2NjIxOHIRCxIEU2xpcBiAgICA-JaVCww",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"number\": 15,\n  \"current_boat\": \"ag5wfndlZWszLTE2NjIxOHIRCxIEQm9hdBiAgICA3uqJCgw\",\n  \"arrival_date\": \"04-30-2017\"\n}"
+				},
+				"description": "http://week3-166218.appspot.com/slip/{:id}"
+			},
+			"response": []
+		},
+		{
+			"name": "Replace a Slip",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can replace a slip.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/slip/ag5wfndlZWszLTE2NjIxOHIRCxIEU2xpcBiAgICA-JaVCww",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"number\": 75\n}"
+				},
+				"description": "http://week3-166218.appspot.com/slip/{:id}"
+			},
+			"response": []
+		},
+		{
+			"name": "Arrive at a Slip",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can view all boats.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"//Confirm that the contents of the Boat you created match the contents you sent and it's at_sea=TRUE.",
+							"",
+							"//parse response data",
+							"//var jsonData = JSON.parse(responseBody);",
+							"",
+							"//checks that boat name is correct",
+							"//tests[\"Correct Name\"] = jsonData.name === \"First Lady\";",
+							"",
+							"//check that boat type is correct",
+							"//tests[\"Correct Type\"] = jsonData.type === \"Long Boat\";",
+							"",
+							"//check that boat length is correct",
+							"//tests[\"Correct Length\"] = jsonData.length === 300;",
+							"",
+							"//check that boat at_sea = True",
+							"//tests[\"Boat is at sea\"] = jsonData.at_sea === true;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/dock/slip/ag5wfndlZWszLTE2NjIxOHIRCxIEU2xpcBiAgICA-JaVCww",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"current_boat\": \"ag5wfndlZWszLTE2NjIxOHIRCxIEQm9hdBiAgICAvKGCCgw\",\n  \"arrival_date\": \"05-01-2017\"\n}"
+				},
+				"description": "http://week3-166218.appspot.com/slip/{:slip_id}/boat"
+			},
+			"response": []
+		},
+		{
+			"name": "Leave  a Slip",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//Confirm that you can view all boats.",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"//Confirm that the contents of the Boat you created match the contents you sent and it's at_sea=TRUE.",
+							"",
+							"//parse response data",
+							"//var jsonData = JSON.parse(responseBody);",
+							"",
+							"//checks that boat name is correct",
+							"//tests[\"Correct Name\"] = jsonData.name === \"First Lady\";",
+							"",
+							"//check that boat type is correct",
+							"//tests[\"Correct Type\"] = jsonData.type === \"Long Boat\";",
+							"",
+							"//check that boat length is correct",
+							"//tests[\"Correct Length\"] = jsonData.length === 300;",
+							"",
+							"//check that boat at_sea = True",
+							"//tests[\"Boat is at sea\"] = jsonData.at_sea === true;"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "http://week3-166218.appspot.com/dock/slip/ag5wfndlZWszLTE2NjIxOHIRCxIEU2xpcBiAgICA-JaVCww",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": "http://week3-166218.appspot.com/dock/slip/{:slip_id}"
+			},
+			"response": []
+		}
+	]
+}
