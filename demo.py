@@ -24,6 +24,7 @@ class BoatHandler(webapp2.RequestHandler):
     new_boat = Boat(name=boat_data['name'], type=boat_data['type'], length=boat_data['length'], at_sea=True)
     new_boat.put()
     new_boat.id = new_boat.key.urlsafe()
+    new_boat.id = str(new_boat.id)
     new_boat.put()
     boat_dict = new_boat.to_dict()
     boat_dict['self'] = '/boat/' + new_boat.id
