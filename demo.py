@@ -37,8 +37,8 @@ class BoatHandler(webapp2.RequestHandler):
         #if boat is in slip
         if (b.at_sea == False):
           #get query of all slips
-          allSlips = Slip.all()
-          allSlips.filter('current_boat =', str(b.id))
+          allSlips = Slip.query(slip.current_boat == b.id))
+          #allSlips.filter('current_boat =', str(b.id))
           slip = allSlips.get()
           #empty slip with boat
           if (slip.current_boat == b.id):
