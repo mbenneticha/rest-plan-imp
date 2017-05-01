@@ -232,19 +232,25 @@ class SlipHandler(webapp2.RequestHandler):
         else:
           #set new number
           if slip_data.get('number'):
-            s.name = slip_data['number']
-            self.response.write("Replaced slip number\n")
+            s.number = slip_data['number']
+            s.put()
+            if s.current_boat != None:
+              b = ndb.Key(urlsafe=s.current_boat).get()
+              b.at_sea = True
+              b.put()
+              s.current_boat = None
+              s.arrival_date = None
+              s.put()
+            #self.response.write("Replaced slip number\n")
         #set new current_boat if given
         if slip_data.get('current_boat'):
           s.current_boat = slip_data['current_boat']
           s.arrival_date = slip_data['arrival_date']
           self.response.write("Replaced slip current_boat\n")
           self.response.write("Replaced slip arrival_date\n")
-        else:
-          s.current_boat = None;
-          s.arrival_date = None;
         s.put()
         slip_dict = s.to_dict()
+        slip_dict['Current Boat'] = '/slip/' + s.current_boat
         self.response.write(slip_dict)
     except ValueError:
       self.response.status = '400 Bad Request'
