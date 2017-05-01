@@ -24,7 +24,6 @@ class BoatHandler(webapp2.RequestHandler):
     new_boat = Boat(name=boat_data['name'], type=boat_data['type'], length=boat_data['length'], at_sea=True)
     new_boat.put()
     new_boat.id = new_boat.key.urlsafe()
-    new_boat.id = str(new_boat.id)
     new_boat.put()
     boat_dict = new_boat.to_dict()
     boat_dict['self'] = '/boat/' + new_boat.id
@@ -68,8 +67,15 @@ class BoatHandler(webapp2.RequestHandler):
         else:
           if boat_data.get('name'):
             b.name = boat_data['name']
-            self.response.write("Updated boat name\n")
-          # Update Length and Type here
+            #self.response.write("Updated boat name\n")
+          #set new type if given
+          if boat_data.get('type'):
+            b.type = boat_data['type']
+            #self.response.write("Updated boat type\n")
+          #set new length if given
+          if boat_data.get('length'):
+            b.length = boat_data['length']
+            #self.response.write("Updated boat length\n")
           b.put()
           boat_dict = b.to_dict()
           self.response.write(boat_dict)
@@ -96,17 +102,17 @@ class BoatHandler(webapp2.RequestHandler):
           #set new name
           if boat_data.get('name'):
             b.name = boat_data['name']
-            self.response.write("Updated boat name\n")
+            #self.response.write("Updated boat name\n")
           #set new type if given
           if boat_data.get('type'):
             b.type = boat_data['type']
-            self.response.write("Updated boat type\n")
+            #self.response.write("Updated boat type\n")
           else:
             b.type = None;
           #set new length if given
           if boat_data.get('length'):
             b.length = boat_data['length']
-            self.response.write("Updated boat length\n")
+            #self.response.write("Updated boat length\n")
           else:
             b.length = None;
           b.put()
