@@ -36,8 +36,9 @@ class BoatHandler(webapp2.RequestHandler):
         b = ndb.Key(urlsafe=id).get()
         #if boat is in slip
         if (b.at_sea == False):
-          #get all slips
-          allSlips = Slip.query(Slip.current_boat == b.id).fetch()
+          #get query of all slips
+          allSlips = Slip.all()
+          allSlips.filter('current_boat =', str(b.id))
           slip = allSlips.get()
           #empty slip with boat
           if (slip.current_boat == b.id):
