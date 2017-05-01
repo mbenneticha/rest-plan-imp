@@ -360,5 +360,5 @@ app = webapp2.WSGIApplication([
     ('/boat/(.*)', BoatHandler),
     ('/slip', SlipHandler),
     ('/slip/(.*)', SlipHandler),
-    ('/slip/<user_id>/boat', LaunchHandler),
+    ('/dock/slip/(.*)', LaunchHandler),
 ], debug=True)
