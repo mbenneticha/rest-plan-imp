@@ -128,6 +128,7 @@ class BoatHandler(webapp2.RequestHandler):
       allBoats_dict = []
       for boat in allBoats:
         boat_dict = boat.to_dict()
+        boat_dict['self'] = '/boat/' + str(boat.id) 
         allBoats_dict.append(boat_dict)
       self.response.write(allBoats_dict)
 
@@ -244,8 +245,12 @@ class SlipHandler(webapp2.RequestHandler):
     #view all slips
     else:
       allSlips = Slip.query().fetch()
-      allSlips = allSlips.to_dict()
-      self.response.write(allSlips)
+      allSlips_dict = []
+      for slip in allSlips:
+        slip_dict = slip.to_dict()
+        slip_dict['self'] = '/slip/' + str(slip.id) 
+        allSlips_dict.append(slip_dict)
+      self.response.write(allSlips_dict)
 
 class LaunchHandler(webapp2.RequestHandler):
   
