@@ -269,7 +269,8 @@ class SlipHandler(webapp2.RequestHandler):
       allSlips_dict = []
       for slip in allSlips:
         slip_dict = slip.to_dict()
-        slip_dict['self'] = '/slip/' + str(slip.id) 
+        slip_dict['self'] = '/slip/' + str(slip.id)
+        slip_dict['Current Boat'] = '/boat/' + str(slip.current_boat) 
         allSlips_dict.append(slip_dict)
       self.response.write(allSlips_dict)
 
@@ -321,6 +322,7 @@ class LaunchHandler(webapp2.RequestHandler):
           self.response.write("ERROR: Must include arrival_date AND current_boat.")
         #check if slip has a boat already
         elif (s.current_boat!=None):
+          self.response.status = 'ERROR 403 Forbidden'
           self.response.write("ERROR: This slip is already occupied.\n")
         #update correct data
         else:
