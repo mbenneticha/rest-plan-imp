@@ -331,7 +331,7 @@ class LaunchHandler(webapp2.RequestHandler):
             s.put()
           #update boat to at_sea=False
           if (slip_data.get('current_boat')!=None):
-            b = s.current_boat
+            b = ndb.Key(urlsafe=s.current_boat).get()
             b.at_sea = False;
             b.put()
           
