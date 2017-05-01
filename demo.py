@@ -207,7 +207,7 @@ class SlipHandler(webapp2.RequestHandler):
             #slip_dict['Current Boat'] = '/slip/' + s.current_boat
           s.put()
           slip_dict = s.to_dict()
-          slip_dict['Current Boat'] = '/slip/' + s.current_boat
+          slip_dict['Current Boat'] = '/boat/' + s.current_boat
           self.response.write(slip_dict)
     except ValueError:
       self.response.status = '400 Bad Request'
@@ -246,11 +246,11 @@ class SlipHandler(webapp2.RequestHandler):
         if slip_data.get('current_boat'):
           s.current_boat = slip_data['current_boat']
           s.arrival_date = slip_data['arrival_date']
-          self.response.write("Replaced slip current_boat\n")
-          self.response.write("Replaced slip arrival_date\n")
+          #self.response.write("Replaced slip current_boat\n")
+          #self.response.write("Replaced slip arrival_date\n")
         s.put()
         slip_dict = s.to_dict()
-        slip_dict['Current Boat'] = '/slip/' + s.current_boat
+        slip_dict['Current Boat'] = '/boat/' + str(s.current_boat)
         self.response.write(slip_dict)
     except ValueError:
       self.response.status = '400 Bad Request'
