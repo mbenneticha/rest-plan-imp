@@ -199,6 +199,9 @@ class SlipHandler(webapp2.RequestHandler):
           if slip_data.get('current_boat'):
             s.current_boat = slip_data['current_boat']
             s.arrival_date = slip_data['arrival_date']
+            b = ndb.Key(urlsafe=s.current_boat).get()
+            b.at_sea = False;
+            b.put()
             #s.put()
             #slip_dict = s.to_dict()
             #slip_dict['Current Boat'] = '/slip/' + s.current_boat
